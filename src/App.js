@@ -25,7 +25,7 @@ function App() {
   }])
 
   return (
-      <div className="App">
+      <div className="container">
         {/* <h1>Hello from React</h1> */}
         {/* <h2>Hello</h2> */}
         <Header title="Task Tracker"/>

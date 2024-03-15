@@ -1,18 +1,29 @@
-let arr = [10, 20, 30, 50];
+const dateString = "2024-03-15T12:48";
 
-let ele = 100;
+const dateTimeList = dateString.split("T");
 
-let pos = 1;
+const date = dateTimeList[0].split("-");
 
-for (let i = arr.length; i >= pos; i--) {
-  if (arr.length === pos) { arr[i] = ele; break }
-  else {
-    arr[i] = arr[i-1];
-    if (i === pos) { arr[i] = ele; break }
-  }
+console.log(date);
 
-  // console.log(i);
+let result = "";
 
+const month = monthObj["03"];
+
+result = month+" "+date[2]+" at ";
+
+// console.log(result);
+
+const timeList = dateTimeList[1].split(":");
+let time = "";
+if(parseInt(timeList[0]) === 12) time = `${timeList[0]}:${timeList[1]} PM`;
+else{
+  time = parseInt(timeList[0])>12? `${parseInt(timeList[0])- 12}:${timeList[1]} PM` : `${timeList[0]}:${timeList[1]} AM`;
 }
 
-console.log(arr);
+
+console.log(time);
+
+result = result + time;
+
+console.log(result);

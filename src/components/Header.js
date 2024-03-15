@@ -4,13 +4,13 @@ import Button from "./Button";
 const Header = (props) => {
 // We can even de-structure the props object and use {title}
 
-  const onClick = () =>{
-    console.log("Clicked");
-  }
+  // const onClick = () =>{
+  //   console.log("Clicked");
+  // }
   return (
     <header className="header">
       <h1>{props.title}</h1>
-      <Button color="Green" text ="Add" onClick={onClick}></Button>
+      <Button color={`${props.showAdd? "red" : "green"}`} text ={`${props.showAdd? "Close" : "Add Task"}`} onToggleAddBtn = {props.onToggleAddBtn}></Button>
     </header>
   );
 } 

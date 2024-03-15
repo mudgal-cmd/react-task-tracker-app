@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import parseDateTime from "../utils/helper";
+
 const AddTask = ({ onAdd }) => {
 
   // Defining 3 component level states for each input field in the add task form
@@ -14,7 +16,13 @@ const AddTask = ({ onAdd }) => {
 
     if(!text){alert("Please add task"); return};
 
-    onAdd({text, dayTime, reminder});
+    const id = Math.floor(Math.random()*10000)+1; //The new task id should be named as "id" only, to avoid the warning about unique key props.
+
+    const day = parseDateTime(dayTime);
+
+    console.log(day);
+
+    onAdd({id, text, day, reminder}); //task object properties should be named the same as we've specified the name in the props in task.
     e.target.reset();
     setText("");
     setDayTime("");

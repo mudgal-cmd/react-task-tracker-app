@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
+import AddTask from "./components/AddTask";
 
 function App() {
 
@@ -24,6 +25,25 @@ function App() {
     reminder: true
   }]);
 
+  const[toggleAddForm, seToggleAddForm] = useState(false);
+
+  const toggleAddButton = () => {
+    
+    seToggleAddForm(!toggleAddForm);
+
+    console.log(`Add Button clicked`, toggleAddForm);
+
+  }
+
+
+  // Add Task 
+
+  const addTask = (task) =>{
+
+    setTasks([...tasks, task]);
+
+    // console.log(newTask);
+  }
 
   //Delete task
 
@@ -39,12 +59,12 @@ function App() {
 
     setTasks(tasks.map((task) =>
       task.id === id ? { ...task, reminder: !task.reminder } : task
-    ))
+    ));
 
     // let newTask = tasks.filter(task => task.id === id);
 
 
-    // Vinalla JS Logic
+    //------------- Vinalla JS Logic
 
     // const taskElement = document.getElementById(id);
 
@@ -70,10 +90,15 @@ function App() {
 
   }
 
+
   return (
     <div className="container">
-      <Header title="Task Tracker" />
-      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No More tasks to show</p>}
+      <Header title="Task Tracker" onToggleAddBtn = {toggleAddButton} showAdd = {toggleAddForm}/>
+
+      {/* Using the short-circuit operator which is kind of shorthand for ternary expression, i.e., without specifying the else */}
+      {toggleAddForm && <AddTask onAdd = {addTask}/> }
+
+      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No Tasks to show</p>}
     </div>
 
 

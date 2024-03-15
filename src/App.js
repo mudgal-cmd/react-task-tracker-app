@@ -22,17 +22,61 @@ function App() {
     text: "Grocery Shopping",
     day: "Feb 5th at 2:30 PM",
     reminder: true
-  }])
+  }]);
+
+
+  //Delete task
+
+  const deleteTask = (id) => {
+    console.log(`Task deleted: ${id}`);
+    setTasks(tasks.filter((task) => task.id !== id));
+  }
+
+  //Toggle Reminder
+
+  const toggleReminder = (id) => {
+    // console.log(`Id is ${id}`);
+
+    setTasks(tasks.map((task) =>
+      task.id === id ? { ...task, reminder: !task.reminder } : task
+    ))
+
+    // let newTask = tasks.filter(task => task.id === id);
+
+
+    // Vinalla JS Logic
+
+    // const taskElement = document.getElementById(id);
+
+    // console.log(taskElement);
+
+    // const findTask = tasks.filter(task => task.id === parseInt(taskElement.id));
+
+    // const mod = findTask.map(()=> {
+    //   return {...findTask, id: findTask.id+10}
+    // })
+
+
+    // if(findTask[0].reminder === false){
+    //   taskElement.classList.add("reminder");
+    //   findTask[0].reminder = true;
+    //   console.log(`Inside false`, findTask[0].reminder);
+    // }
+    // else{
+    //   taskElement.classList.remove("reminder");
+    //   findTask[0].reminder = false;
+    //   console.log(`Inside true`, findTask[0].reminder);
+    // }
+
+  }
 
   return (
-      <div className="container">
-        {/* <h1>Hello from React</h1> */}
-        {/* <h2>Hello</h2> */}
-        <Header title="Task Tracker"/>
-        <Tasks tasks = {tasks}></Tasks>
-      </div>
+    <div className="container">
+      <Header title="Task Tracker" />
+      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No More tasks to show</p>}
+    </div>
 
-    
+
   );
 }
 

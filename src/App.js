@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
+import Footer from "./components/Footer";
+import About from "./components/About";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 
 function App() {
@@ -55,7 +58,7 @@ function App() {
   }
 
   //Fetch task from server by ID to toggle "Reminder"
-  
+
   const fetchTaskById = async (id) => {
 
     const response = await axios.get(`http://localhost:5000/tasks/${id}`);
@@ -68,19 +71,19 @@ function App() {
 
   //Update the fetched task to toggle the reminder
 
-  const updateReminderInTask = async (id)=>{
+  const updateReminderInTask = async (id) => {
 
     const taskToUpdate = fetchTaskById(id);
 
     // const modifiedTask = {...taskToUpdate, reminder : !taskToUpdate.reminder};
 
-    let modifiedTask =  await taskToUpdate;
+    let modifiedTask = await taskToUpdate;
 
     // await axios.put(`http://localhost:5000/tasks/${id}`, modifiedTask);
 
     // console.log(typeof modifiedTask);
 
-    modifiedTask = {...modifiedTask, reminder: !modifiedTask.reminder};
+    modifiedTask = { ...modifiedTask, reminder: !modifiedTask.reminder };
 
     await axios.put(`http://localhost:5000/tasks/${id}`, modifiedTask);
 
@@ -153,14 +156,29 @@ function App() {
 
 
   return (
-    <div className="container">
-      <Header title="Task Tracker" onToggleAddBtn={toggleAddButton} showAdd={toggleAddForm} />
+    <Router>
+      <div className="container">
+        <Header title="Task Tracker" onToggleAddBtn={toggleAddButton} showAdd={toggleAddForm} />
 
-      {/* Using the short-circuit operator which is kind of shorthand for ternary expression, i.e., without specifying the else */}
-      {toggleAddForm && <AddTask onAdd={addTask} />}
+        {/* Using the short-circuit operator which is kind of shorthand for ternary expression, i.e., without specifying the else */}
+        {/* {toggleAddForm && <AddTask onAdd={addTask} />}
 
-      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No Tasks to show</p>}
-    </div>
+        {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No Tasks to show</p>} */}
+        <Routes>
+          <Route path="/*" element={ // "/* the wildcard asterisk ensures the exact match of the URL."
+            <>
+              {toggleAddForm && <AddTask onAdd={addTask} />}
+
+              {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No Tasks to show</p>}
+            </>
+          }></Route>
+          <Route path="/about" Component={About} /> //reference of About component to be rendered when this URL matches.
+        </Routes>
+        <Footer />
+      </div>
+
+    </Router>
+
 
 
   );

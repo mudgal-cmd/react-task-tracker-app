@@ -9,10 +9,10 @@ function App() {
 
   const [tasks, setTasks] = useState([]); //Using the shared state at the root component level
 
-  const[toggleAddForm, seToggleAddForm] = useState(false);
+  const [toggleAddForm, seToggleAddForm] = useState(false);
 
   const toggleAddButton = () => {
-    
+
     seToggleAddForm(!toggleAddForm);
 
     console.log(`Add Button clicked`, toggleAddForm);
@@ -39,7 +39,8 @@ function App() {
 
   //   setTasks(tasksFromServer);
 
-  // }, []);
+  // }, []); //This version will throw an error - "destroy is not a function", because the callback inside the useEffect hook cannot be used for our async processing as it is used by the useFeect (depending on the dependency array) for cleanup, etc.
+
 
   //Fetch Task
 
@@ -47,20 +48,57 @@ function App() {
 
     const response = await axios.get("http://localhost:5000/tasks");
 
-    console.log(response.data);
+    // console.log(response.data);
 
     return response.data;
 
   }
 
+  //Fetch task from server by ID to toggle "Reminder"
+  
+  const fetchTaskById = async (id) => {
 
+    const response = await axios.get(`http://localhost:5000/tasks/${id}`);
+
+    // console.log(response.data);
+
+    return response.data;
+
+  }
+
+  //Update the fetched task to toggle the reminder
+
+  const updateReminderInTask = async (id)=>{
+
+    const taskToUpdate = fetchTaskById(id);
+
+    // const modifiedTask = {...taskToUpdate, reminder : !taskToUpdate.reminder};
+
+    let modifiedTask =  await taskToUpdate;
+
+    // await axios.put(`http://localhost:5000/tasks/${id}`, modifiedTask);
+
+    // console.log(typeof modifiedTask);
+
+    modifiedTask = {...modifiedTask, reminder: !modifiedTask.reminder};
+
+    await axios.put(`http://localhost:5000/tasks/${id}`, modifiedTask);
+
+    console.log(modifiedTask);
+
+  }
+
+  // updateReminderInTask("f8a4");
   // Add Task 
 
-  const addTask = (task) =>{
+  const addTask = async (task) => {
 
-    setTasks([...tasks, task]);
+    console.log("Add task executed");
 
-    // console.log(newTask);
+    await axios.post("http://localhost:5000/tasks",
+      task)
+      .then(res => setTasks([...tasks, res.data]))
+      .catch(err => console.log(err));
   }
 
   //Delete task
@@ -77,6 +115,8 @@ function App() {
 
   const toggleReminder = (id) => {
     // console.log(`Id is ${id}`);
+
+    updateReminderInTask(id);
 
     setTasks(tasks.map((task) =>
       task.id === id ? { ...task, reminder: !task.reminder } : task
@@ -114,10 +154,10 @@ function App() {
 
   return (
     <div className="container">
-      <Header title="Task Tracker" onToggleAddBtn = {toggleAddButton} showAdd = {toggleAddForm}/>
+      <Header title="Task Tracker" onToggleAddBtn={toggleAddButton} showAdd={toggleAddForm} />
 
       {/* Using the short-circuit operator which is kind of shorthand for ternary expression, i.e., without specifying the else */}
-      {toggleAddForm && <AddTask onAdd = {addTask}/> }
+      {toggleAddForm && <AddTask onAdd={addTask} />}
 
       {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggleReminder={toggleReminder}></Tasks> : <p>No Tasks to show</p>}
     </div>

@@ -12,17 +12,19 @@ const AddTask = ({ onAdd }) => {
 
   const onSubmitFunc = (e) => {
     
+    console.log("on submit executed");
+
     e.preventDefault();
 
     if(!text){alert("Please add task"); return};
 
-    const id = Math.floor(Math.random()*10000)+1; //The new task id should be named as "id" only, to avoid the warning about unique key props.
+    // const id = Math.floor(Math.random()*10000)+1; //The new task id should be named as "id" only, to avoid the warning about unique key props. We do not need the ID when using the json-server as it automatically generates a unique ID.
 
     const day = parseDateTime(dayTime);
 
-    console.log(day);
+    console.log(`Beautiful Day ${day}`);
 
-    onAdd({id, text, day, reminder}); //task object properties should be named the same as we've specified the name in the props in task.
+    onAdd({text, day, reminder}); //task object properties should be named the same as we've specified the name in the props in task.
     e.target.reset();
     setText("");
     setDayTime("");

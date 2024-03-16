@@ -1,29 +1,13 @@
 // import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
+import axios from "axios";
 
 function App() {
 
-  const [tasks, setTasks] = useState([{ //Using the shared state at the root component level
-    id: 1,
-    text: "Doctors Appointment",
-    day: "Feb 5th at 2:30 PM",
-    reminder: true
-  },
-  {
-    id: 2,
-    text: "Meeting at School",
-    day: "Feb 6th at 1:30 PM",
-    reminder: true
-  },
-  {
-    id: 3,
-    text: "Grocery Shopping",
-    day: "Feb 5th at 2:30 PM",
-    reminder: true
-  }]);
+  const [tasks, setTasks] = useState([]); //Using the shared state at the root component level
 
   const[toggleAddForm, seToggleAddForm] = useState(false);
 
@@ -32,6 +16,40 @@ function App() {
     seToggleAddForm(!toggleAddForm);
 
     console.log(`Add Button clicked`, toggleAddForm);
+
+  }
+
+  useEffect(() => {
+
+    const getTasks = async () => {
+
+      const tasksFromServer = await fetchTasksFromServer();
+
+      setTasks(tasksFromServer);
+
+    }
+
+    getTasks();
+
+  }, []); //Empty dependency array to ensure that the function in the component body executes only once and not everytime the component re-renders.
+
+  // useEffect(async ()=>{
+
+  //   const tasksFromServer = await fetchTasksFromServer();
+
+  //   setTasks(tasksFromServer);
+
+  // }, []);
+
+  //Fetch Task
+
+  const fetchTasksFromServer = async () => {
+
+    const response = await axios.get("http://localhost:5000/tasks");
+
+    console.log(response.data);
+
+    return response.data;
 
   }
 
@@ -47,9 +65,12 @@ function App() {
 
   //Delete task
 
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+
+    await axios.delete(`http://localhost:5000/tasks/${id}`); //deleting from the server
+
     console.log(`Task deleted: ${id}`);
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTasks(tasks.filter((task) => task.id !== id)); //This is just deleting from the UI and not from the server/backend
   }
 
   //Toggle Reminder
